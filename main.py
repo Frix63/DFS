@@ -23,12 +23,12 @@ txtarray = tuple(data.get('txt_type', ()))
 
 # Define file type mappings to target directories
 file_type_mapping = {
-    imgarray: 'downloaded_images',
-    txtarray: 'downloaded_text_files',
-    soundarray: 'downloaded_sounds',
-    videoarray: 'downloaded_videos',
-    programarray: 'downloaded_programs',
-    compressedarray: 'downloaded_compressed_files',
+    imgarray: 'images',
+    txtarray: 'text_files',
+    soundarray: 'sounds',
+    videoarray: 'videos',
+    programarray: 'programs',
+    compressedarray: 'compressed_files',
 }
 
 # Keep track of directories created based on file_type_mapping
@@ -45,12 +45,12 @@ for file in downloads_path.iterdir():
         # Skip if it's a directory that was created by the script
         if file.name in created_dirs:
             continue
-        elif file.name.startswith("downloaded_folders") or file.name.startswith("other_files"):
+        elif file.name.startswith("folders") or file.name.startswith("other"):
             continue
 
         # Move non-self-created folders to 'other_folders'
         if file.is_dir() and not file.name.startswith("."):
-            other_folders_dir = downloads_path / "downloaded_folders"
+            other_folders_dir = downloads_path / "folders"
             other_folders_dir.mkdir(exist_ok=True)
             new_path = other_folders_dir / file.name
             file.rename(new_path)
@@ -64,7 +64,7 @@ for file in downloads_path.iterdir():
             break
     else:
         # If no match found, the file type is not in the JSON data, move it to a default directory
-        default_directory = downloads_path / 'other_files'
+        default_directory = downloads_path / 'other'
         default_directory.mkdir(exist_ok=True)
         new_path = default_directory / file.name
         file.rename(new_path)
