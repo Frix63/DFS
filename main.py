@@ -1,59 +1,54 @@
 import os
-import pathlib
+import json
 from pathlib import Path
 
-downloads_path = str(Path.home() / "Downloads")
+downloads_path = Path.home() / "Downloads"
+json_path = Path('filetypes.json')
 
-img_type = ('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif', 'raw', '.heif', '.jfif', '.exif', '.webp', '.svg', '.ico', '.psd', '.arw')
+# Check if the json file exists
+if not json_path.exists():
+    raise FileNotFoundError("The 'filetypes.json' file is missing. Please make sure it exists.")
 
-txt_type = ('.txt', '.docx', '.doc', '.pdf', '.pptx', '.ppt', '.xlsx', '.xls', '.csv', '.xml', '.json', '.html', '.htm', '.md', '.odt', '.ods', '.odp', '.odg', '.odf', '.rtf', '.tex', '.wpd', '.wps', '.xps', '.key', '.pages', '.numbers', '.c', '.cpp', '.py', '.java', '.class', '.cs', '.vb', '.js', '.ts', '.css', '.scss', '.less', '.php', '.sql', '.swift', '.go', '.rb', '.pl', '.m', '.h', '.vb', '.vbs', '.bat', '.cmd', '.ps1', '.psm1', '.sh', '.bash', '.bashrc', '.bash_profile', '.zsh', '.zshrc', '.zprofile', '.zlogin', '.zlogout', '.zshenv', '.zsh-theme', '.zshrc', '.zsh-update', '.zwc', '.zcompdump', '.zcompdump.zwc', '.zsh_history', '.zshrc', '.zshrc.local', '.zshrc~', '.zshrc-e', '.zshrc.pre-oh-my-zsh', '.zshrc.pre-oh-my-zsh~', '.zshrc.pre-oh-my-zsh-e', '.zshrc.pre-oh-my-zsh-e~', '.zshrc.pre-oh-my-zsh~', '.zshrc.pre-oh-my-zsh-e', '.zshrc.pre-oh-my-zsh-e~', '.zshrc.pre-oh-my-zsh', '.zshrc.pre-oh-my-zsh~', '.zshrc.pre-oh-my-zsh-e', '.zshrc.pre-oh-my-zsh-e~', '.zshrc.pre-oh-my-zsh', '.zshrc.pre-oh-my-zsh~', '.zshrc.pre-oh-my-zsh-e', '.zshrc.pre-oh-my-zsh-e~', '.zshrc.pre-oh-my-zsh', '.zshrc.pre-oh-my-zsh~', '.zshrc.pre-oh-my-zsh-e', '.zshrc.pre-oh-my-zsh-e~', '.zshrc.pre')
+# Use context managers to read the json data
+with json_path.open('r') as json_file:
+    data = json.load(json_file)
 
-sound_type = ('.mp3', '.flac',  '.wav', '.wma', '.aac', '.aiff', '.alac', '.dsd', '.mp2', '.m4a', '.m4p', '.m4b', '.m4r', '.ogg', '.oga', '.opus', '.webm', '.3gp', '.midi', '.mka', '.mks', '.ra', '.ram', '.rm', '.rv', '.ts', '.vob', '.m3u', '.m3u8', '.pls', '.asx', '.xspf', '.wpl', '.zpl', '.flp')
+soundarray = tuple(data.get('sound_type', ()))
+videoarray = tuple(data.get('video_type', ()))
+programarray = tuple(data.get('program_type', ()))
+compressedarray = tuple(data.get('compressed_file_type', ()))
+imgarray = tuple(data.get('img_type', ()))
+txtarray = tuple(data.get('txt_type', ()))
 
-video_type = ('.mp4', '.mov', '.wmv', '.flv', '.avi', '.avchd', '.webm', '.mkv', '.m4v', '.m4p', '.m4b', '.m4r', '.m4a', '.ogg', '.oga', '.ogv', '.ogx', '.qt', '.rm', '.rmvb', '.vob', '.3gp', '.3g2', '.mxf', '.roq', '.nsv', '.f4v', '.f4p', '.f4a', '.f4b')
+# Define file type mappings to target directories
+file_type_mapping = {
+    imgarray: 'downloaded_images',
+    txtarray: 'downloaded_text_files',
+    soundarray: 'downloaded_sounds',
+    videoarray: 'downloaded_videos',
+    programarray: 'downloaded_programs',
+    compressedarray: 'downloaded_compressed_files',
+}
 
-program_type = ('.exe', '.msi', '.apk', '.app', '.bat', '.bin', '.cgi', '.com', '.gadget', '.jar', '.w')
+# Create directories if they don't exist
+for directory in file_type_mapping.values():
+    dir_path = downloads_path / directory
+    dir_path.mkdir(parents=True, exist_ok=True)
 
-compressed_file_type = ('.rar', '.zip', '.7z', '.tar', '.gz', '.bz2', '.xz', '.lz', '.lzma', '.cab', '.iso', '.dmg', '.vhd', '.vmdk', '.vdi', '.hfs', '.wim', '.swm', '.z', '.zpaq', '.zz', '.zst', '.zstd', '.tzst', '.zfp', '.zbf', '.zab', '.zlib', '.zst', '.zstd', '.tzst', '.zfp', '.zbf', '.zab', '.zlib', '.z', '.zpaq', '.zz', '.zst', '.zstd', '.tzst', '.zfp', '.zbf', '.zab', '.zlib', '.z', '.zpaq', '.zz', '.zst', '.zstd', '.tzst', '.zfp', '.zbf', '.zab', '.zlib', '.z', '.zpaq', '.zz', '.zst', '.zstd', '.tzst', '.zfp', '.zbf', '.zab', '.zlib', '.z', '.zpaq', '.zz', '.zst', '.zstd', '.tzst', '.zfp', '.zbf', '.zab', '.zlib', '.z', '.zpaq', '.zz', '.zst', '.zstd', '.tzst', '.zfp', '.zbf', '.zab', '.zlib', '.z', '.zpaq', '.zz', '.zst', '.zstd', '.tzst', '.zfp', '.zbf', '.zab', '.zlib', '.z', '.zpaq', '.zz', '.zst', '.zstd', '.tzst', '.zfp', '.zbf', '.zab', '.zlib', '.z', '.zpaq', '.zz', '.zst', '.zstd', '.tzst', '.zfp', '.zbf', '.zab', '.zlib')
-
-if not os.path.exists(downloads_path + '\\downloaded_images'):
-    os.mkdir(downloads_path + '\\downloaded_images')
-if not os.path.exists(downloads_path + '\\downloaded_text_files'):
-    os.mkdir(downloads_path + '\\downloaded_text_files')
-if not os.path.exists(downloads_path + '\\downloaded_sounds'):
-    os.mkdir(downloads_path + '\\downloaded_sounds')
-if not os.path.exists(downloads_path + '\\downloaded_videos'):
-    os.mkdir(downloads_path + '\\downloaded_videos')
-if not os.path.exists(downloads_path + '\\downloaded_programs'):
-    os.mkdir(downloads_path + '\\downloaded_programs')
-if not os.path.exists(downloads_path + '\\downloaded_compressed_files'):
-    os.mkdir(downloads_path + '\\downloaded_compressed_files')
-
-for files in os.listdir(downloads_path):
-    files = files.lower()
-    if files.endswith(img_type):
-        old_path = os.path.join(downloads_path, files)
-        new_path = os.path.join(downloads_path, 'downloaded_images', files)
-        pathlib.Path(old_path).rename(new_path)
-    elif files.endswith(txt_type):
-        old_path = os.path.join(downloads_path, files)
-        new_path = os.path.join(downloads_path, 'downloaded_text_files', files)
-        pathlib.Path(old_path).rename(new_path)
-    elif files.endswith(sound_type):
-        old_path = os.path.join(downloads_path, files)
-        new_path = os.path.join(downloads_path, 'downloaded_sounds', files)
-        pathlib.Path(old_path).rename(new_path)
-    elif files.endswith(video_type):
-        old_path = os.path.join(downloads_path, files)
-        new_path = os.path.join(downloads_path, 'downloaded_videos', files)
-        pathlib.Path(old_path).rename(new_path)
-    elif files.endswith(program_type):
-        old_path = os.path.join(downloads_path, files)
-        new_path = os.path.join(downloads_path, 'downloaded_programs', files)
-        pathlib.Path(old_path).rename(new_path)
-    elif files.endswith(compressed_file_type):
-        old_path = os.path.join(downloads_path, files)
-        new_path = os.path.join(downloads_path, 'downloaded_compressed_files', files)
-        pathlib.Path(old_path).rename(new_path)
-    else:
+# Move files to appropriate directories
+for file in downloads_path.iterdir():
+    if not file.is_file():
         continue
+
+    lower_filename = file.name.lower()
+    for file_type, target_directory in file_type_mapping.items():
+        if lower_filename.endswith(file_type) or lower_filename == file_type:
+            new_path = downloads_path / target_directory / file.name
+            file.rename(new_path)
+            break
+    else:
+        # If no match found, the file type is not in the JSON data, move it to a default directory
+        default_directory = downloads_path / 'other_files'
+        default_directory.mkdir(exist_ok=True)
+        new_path = default_directory / file.name
+        file.rename(new_path)
