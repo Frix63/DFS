@@ -2,6 +2,8 @@
 
 DFS (Downloads Folder Sorter) is a Python script designed to help you organize your cluttered downloads folder by automatically sorting files into specific directories based on their file types. This script is optimized for Windows.
 
+![Alt text](Preview.png)
+
 ## Requirements
 
 To run this script, you need to have Python installed on your system. Additionally, ensure that you have the necessary permissions to create directories and move files within your "Downloads" folder.
