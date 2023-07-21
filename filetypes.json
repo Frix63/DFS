@@ -284,7 +284,8 @@
         "drf",
         "tga",
         "icns",
-        "heic"
+        "heic",
+        "dib"
     ],
     "txt_type": [
         ".txt",
