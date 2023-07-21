@@ -30,6 +30,9 @@ file_type_mapping = {
     compressedarray: 'downloaded_compressed_files',
 }
 
+# Keep track of directories created based on file_type_mapping
+created_dirs = set(file_type_mapping.values())
+
 # Create directories if they don't exist
 for directory in file_type_mapping.values():
     dir_path = downloads_path / directory
@@ -38,6 +41,18 @@ for directory in file_type_mapping.values():
 # Move files to appropriate directories
 for file in downloads_path.iterdir():
     if not file.is_file():
+        # Skip if it's a directory that was created by the script
+        if file.name in created_dirs:
+            continue
+        elif file.name.startswith("downloaded_folders") or file.name.startswith("other_files"):
+            continue
+
+        # Move non-self-created folders to 'other_folders'
+        if file.is_dir() and not file.name.startswith("."):
+            other_folders_dir = downloads_path / "downloaded_folders"
+            other_folders_dir.mkdir(exist_ok=True)
+            new_path = other_folders_dir / file.name
+            file.rename(new_path)
         continue
 
     lower_filename = file.name.lower()
