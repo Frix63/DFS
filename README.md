@@ -6,7 +6,8 @@ DFS (Downloads Folder Sorter) is a Python script designed to help you organize y
 
 ## Usage
 
-Run main.py **OUTSIDE THE DOWNLOADS FOLDER**
+> Run main.py
+**OUTSIDE THE DOWNLOADS FOLDER**
 
 ## Requirements
 
