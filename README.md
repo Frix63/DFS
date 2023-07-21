@@ -17,3 +17,8 @@ You can modify this JSON file to match your specific file type preferences and t
 ## Disclaimer
 
 Please use this script responsibly and make sure to back up your important files before running it. While the script attempts to be accurate in categorizing files, unexpected results may occur based on the contents of your "Downloads" folder and the JSON file configuration.
+
+## ToDo:
+
+- [ ] Settings
+- [ ] GUI
