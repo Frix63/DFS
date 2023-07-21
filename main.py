@@ -3,7 +3,8 @@ import json
 from pathlib import Path
 
 downloads_path = Path.home() / "Downloads"
-json_path = Path('filetypes.json')
+script_path = Path(os.path.abspath(__file__))
+json_path = script_path.parent / 'filetypes.json'
 
 # Check if the json file exists
 if not json_path.exists():
