@@ -57,6 +57,7 @@ for file in downloads_path.iterdir():
         continue
 
     lower_filename = file.name.lower()
+    # Check if the file type is in the JSON data
     for file_type, target_directory in file_type_mapping.items():
         if lower_filename.endswith(file_type) or lower_filename == file_type:
             new_path = downloads_path / target_directory / file.name
