@@ -48,11 +48,18 @@ for file in downloads_path.iterdir():
         elif file.name.startswith("folders") or file.name.startswith("other"):
             continue
 
-        # Move non-self-created folders to 'other_folders'
         if file.is_dir() and not file.name.startswith("."):
             other_folders_dir = downloads_path / "folders"
             other_folders_dir.mkdir(exist_ok=True)
+
+            # If a folder with the same name already exists in the destination, append a unique identifier
+            counter = 1
             new_path = other_folders_dir / file.name
+            while new_path.exists():
+                new_name = f"{file.name} ({counter})"
+                new_path = other_folders_dir / new_name
+                counter += 1
+
             file.rename(new_path)
         continue
 
@@ -61,11 +68,27 @@ for file in downloads_path.iterdir():
     for file_type, target_directory in file_type_mapping.items():
         if lower_filename.endswith(file_type) or lower_filename == file_type:
             new_path = downloads_path / target_directory / file.name
+
+            # If a file with the same name already exists in the destination, append a unique identifier
+            counter = 1
+            while new_path.exists():
+                new_name = f"{file.stem} ({counter}){file.suffix}"
+                new_path = downloads_path / target_directory / new_name
+                counter += 1
+
             file.rename(new_path)
             break
     else:
         # If no match found, the file type is not in the JSON data, move it to a default directory
         default_directory = downloads_path / 'other'
         default_directory.mkdir(exist_ok=True)
-        new_path = default_directory / file.name
+
+        # If a file with the same name already exists in the destination, append a unique identifier
+        counter = 1
+        new_path = downloads_path / 'other' / file.name
+        while new_path.exists():
+            new_name = f"{file.stem}_{counter}{file.suffix}"
+            new_path = downloads_path / 'other' / new_name
+            counter += 1
+
         file.rename(new_path)
